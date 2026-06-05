@@ -1,0 +1,39 @@
+# Cyber Threat Intelligence Dashboard
+
+## Overview
+Cyber Threat Intelligence Dashboard is a web-based cybersecurity monitoring system developed using Flask, HTML, CSS, JavaScript, and Chart.js. The dashboard helps monitor threats, view analytics, and generate security reports.
+
+## Features
+- User Login Authentication
+- Real-time Threat Monitoring
+- Security Alerts
+- Interactive Dashboard
+- Threat Analytics Charts
+- Report Download Functionality
+
+## Technologies Used
+- HTML
+- CSS
+- JavaScript
+- Python (Flask)
+- Chart.js
+
+## Project Structure
+backend/
+frontend/
+screenshots/
+
+## Screenshots
+
+### Login Page
+![Login Page](screenshots/login%20page.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Report Download
+![Report Download](screenshots/report%20download.jpg)
+
+## Author
+Pirthika Annadurai
+
