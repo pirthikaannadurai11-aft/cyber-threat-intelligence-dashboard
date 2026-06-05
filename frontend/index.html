@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cyber Threat Intelligence Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+    margin:0;
+    padding:20px;
+    background:#08111f;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    border:1px solid cyan;
+    border-radius:10px;
+    box-shadow:0 0 15px cyan;
+    margin-bottom:20px;
+}
+
+.active{
+    color:#00ff99;
+    font-weight:bold;
+}
+
+.level{
+    color:orange;
+    font-weight:bold;
+    animation:blink 1s infinite;
+    margin-left:15px;
+}
+
+#clock{
+    color:#00ffff;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#111c2f;
+    border:1px solid cyan;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 0 10px cyan;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 25px cyan;
+}
+
+.safe{
+    color:lightgreen;
+    font-weight:bold;
+}
+
+.threat{
+    color:red;
+    font-weight:bold;
+    animation:blink 1s infinite;
+}
+
+.alert{
+    color:#ff6b6b;
+    animation:blink 1s infinite;
+    margin:10px 0;
+}
+
+progress{
+    width:100%;
+    height:15px;
+}
+
+canvas{
+    background:white;
+    border-radius:10px;
+    padding:10px;
+}
+
+@keyframes blink{
+    50%{
+        opacity:0;
+    }
+}
+button{
+    background:cyan;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+
+    <h2>🛡️ CTI Storage Security Dashboard</h2>
+
+    <div>
+        <span class="active">🟢 Monitoring Active</span>
+        <span class="level">Threat Level: ELEVATED</span>
+    </div>
+
+    <div id="clock"></div>
+
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <h3>📁 Storage Status</h3>
+
+        <p class="safe">
+            Safe Files :
+            <span id="safeCount">0</span>
+        </p>
+
+        <p class="threat">
+            Threat Files :
+            <span id="threatCount">0</span>
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>🚨 Live Alerts (<span id="alertCount">0</span>)</h3>
+
+        <div id="alerts">
+            Loading alerts...
+        </div>
+        <p id="lastUpdated">
+    Last Updated : --
+</p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>🌍 Threat Intelligence</h3>
+
+        <p>🔴 Critical - Malware Detected</p>
+        <p>🟠 High - Suspicious Login</p>
+        <p>🟡 Medium - Unusual File Access</p>
+        <p>🟢 Low - Normal Activity</p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>🎯 Indicators of Compromise</h3>
+
+        <p>malware.exe</p>
+        <p>evil-domain.com</p>
+        <p>192.168.0.10</p>
+        <p>trojan_xyz.dll</p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>📊 Attack Statistics</h3>
+
+        <canvas id="attackChart"></canvas>
+
+    </div>
+
+    <div class="card">
+
+        <h3>🥧 Safe vs Threat Files</h3>
+
+        <canvas id="pieChart"></canvas>
+
+    </div>
+
+<div class="card">
+
+<h3>📥 Security Report</h3>
+
+<button onclick="downloadReport()">
+Download Report
+</button>
+</div>
+
+</div>
+<script>
+
+function updateClock(){
+
+    const now = new Date();
+
+    document.getElementById("clock").innerHTML =
+    now.toLocaleTimeString();
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+let safe=0;
+
+let safeInterval=setInterval(()=>{
+
+    safe++;
+
+    document.getElementById("safeCount").innerText=safe;
+
+    if(safe>=15){
+
+        clearInterval(safeInterval);
+
+    }
+
+},100);
+
+let threat=0;
+
+let threatInterval=setInterval(()=>{
+
+    threat++;
+
+    document.getElementById("threatCount").innerText=threat;
+
+    if(threat>=3){
+
+        clearInterval(threatInterval);
+
+    }
+
+},400);
+
+async function loadAlerts(){
+
+    try{
+
+        let response=
+        await fetch("http://127.0.0.1:5000/alerts");
+
+        let data=
+        await response.json();
+
+        let alertBox=
+        document.getElementById("alerts");
+
+        alertBox.innerHTML="";
+
+document.getElementById("alertCount").innerText =
+data.length;
+
+document.getElementById("lastUpdated").innerHTML =
+"Last Updated : " +
+new Date().toLocaleString();
+
+data.forEach(item=>{
+
+            let p=document.createElement("p");
+
+            p.className="alert";
+
+            p.innerHTML="⚠️ "+item.msg;
+
+            alertBox.appendChild(p);
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+loadAlerts();
+
+setInterval(loadAlerts,5000);
+
+const attackCtx =
+document.getElementById("attackChart");
+
+new Chart(attackCtx,{
+
+    type:'bar',
+
+    data:{
+
+        labels:['Mon','Tue','Wed','thu','fri'],
+
+        datasets:[{
+
+            label:'Cyber Attacks',
+
+            data:[3,5,2,8,4]
+        }]
+
+    }
+
+});
+
+const pieCtx =
+document.getElementById("pieChart");
+
+new Chart(pieCtx,{
+
+    type:'pie',
+
+    data:{
+
+        labels:['Safe Files','Threat Files'],
+        datasets:[{
+
+            data:[15,3]
+        }]
+
+    }
+
+});
+function downloadReport(){
+
+let report=`
+Cyber Threat Intelligence Report
+
+Safe Files : 15
+Threat Files : 3
+
+Threat Level : Elevated
+
+Generated :
+${new Date().toLocaleString()}
+`;
+
+let blob= new Blob([report],{type:"text/plain"});
+
+let a= document.createElement("a");
+
+a.href= URL.createObjectURL(blob);
+
+a.download= "Security_Report.txt";
+
+a.click();
+
+}
+
+</script>
+
+</body>
+</html>
+<footer>
+© 2026 Cyber Threat Intelligence Dashboard | Developed by Pirthika Annadurai
+</footer>
+
+<style>
+footer{
+text-align:center;
+margin-top:20px;
+color:#aaa;
+}
+</style>
