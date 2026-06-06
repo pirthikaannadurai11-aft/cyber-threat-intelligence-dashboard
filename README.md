@@ -30,6 +30,7 @@ screenshots/
 
 # Dashboard
 ![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/dashboard2.png)
 
 # Report Download
 ![Report Download](screenshots/report%20download.jpg)
@@ -37,6 +38,5 @@ screenshots/
 # Author
 Pirthika Annadurai
 
-
-
-linkedin: https://www.linkedin.com/posts/pirthika-annadurai-7101662a4_cybersecurity-python-flask-ugcPost-7468652315177271296-zx-V/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAElZnnwBiJx75khj7eg6vZOHoBRoR6BqHmg
+-github: https://github.com/pirthikaannadurai11-aft 
+-linkedin: https://www.linkedin.com/posts/pirthika-annadurai-7101662a4_cybersecurity-python-flask-ugcPost-7468652315177271296-zx-V/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAElZnnwBiJx75khj7eg6vZOHoBRoR6BqHmg
