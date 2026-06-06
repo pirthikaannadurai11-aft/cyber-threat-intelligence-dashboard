@@ -19,9 +19,14 @@ Cyber Threat Intelligence Dashboard is a web-based cybersecurity monitoring syst
 - Chart.js
 
 # Project Structure
-backend/
-frontend/
-screenshots/
+backend
+frontend
+screenshots
+
+# key highlights
+- real-time monitoring system
+- interactive security dashboard
+- data visualization using charts
 
 # Screenshots
 
